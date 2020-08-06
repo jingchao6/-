@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../vue_demo/node_modules/vue/dist/vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <h1>用户管理</h1>
+    <div v-if="show">
+        <button @click="toadd">添加</button>
+        <table border="1">
+            <tr>
+                <td>编号</td>
+                <td>姓名</td>
+                <td>性别</td>
+                <td>年龄</td>
+                <Td>地址</Td>
+                <td>操作</td>
+            </tr>
+            <tr v-for="(user,index) in users">
+                <td>{{index}}</td>
+                <td>{{user.name}}</td>
+                <td>{{user.sex==0?'男':'女'}}</td>
+                <td>{{user.age}}</td>
+                <td>{{user.addr}}</td>
+                <td>
+                    <a @click="toEdit(index)">修改</a>&nbsp;&nbsp;
+                    <a @click="del(index)">删除</a>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div v-if="!show">
+        姓名：<input type="text" v-model="user.name"><br>
+        性别：<input type="radio" v-model="user.sex" value="0">男
+        <input type="radio" v-model="user.sex" value="1">女<br>
+        年龄：<input type="text" v-model="user.age"><br>
+        地址：<input type="text" v-model="user.addr"><br>
+        <button @click="add(user)" v-if="!isEdit">添加</button>&nbsp;
+        <button @click="edit(user)" v-if="isEdit">修改</button>&nbsp;
+        <button @click="cancel">取消</button>&nbsp;
+    </div>
+
+</div>
+
+</body>
+<script>
+
+    var app =  new Vue({
+        el:"#app",
+        data:{
+            isEdit:false,
+            show:true,
+            user:{},
+            users:[
+                {name:'郭富城', sex:'1', age: 21,addr: '香港'},
+                {name:'刘德华', sex:'0', age: 30,addr: '上海'},
+                {name:'朱茵', sex:'1', age: 24,addr: '澳门'},
+                {name:'高圆圆', sex:'1', age: 18,addr: '北京'},
+                {name:'郑凯', sex:'0', age: 25,addr: '深圳'}
+            ]
+        },
+        methods:{
+            toadd(){
+                this.isEdit = false;
+                this.user = {};
+                this.show=false;
+            },
+            add(user){
+                this.users.push(user);
+                this.show=true;
+            },
+            toEdit(index){
+                this.isEdit=true;
+                this.user=this.users[index];
+                this.show=false;
+            },
+            edit(user){
+                this.show=true;
+            },
+            del(index){
+
+                this.users.splice(index,1);
+
+            },
+            cancel(){
+                this.show=true;
+            }
+        }
+
+
+    })
+
+
+
+</script>
+
+</html>

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="../vue_demo/node_modules/vue/dist/vue.js"></script>
+</head>
+<body>
+<div id="app">
+    <h1>用户管理</h1>
+    <div v-if="show">
+        <div>
+            姓名：<input v-model="searchObj.name"><button @click="search">搜索</button>
+
+        </div>
+
+
+
+        <button @click="toadd">添加</button>
+        <table border="1">
+            <tr>
+                <td>编号</td>
+                <td>姓名</td>
+                <td>性别</td>
+                <td>年龄</td>
+                <td>操作</td>
+            </tr>
+            <tr v-for="(user,index) in showData">
+                <td>{{index}}</td>
+                <td>{{user.name}}</td>
+                <td>{{user.sex==0?'男':'女'}}</td>
+                <td>{{user.age}}</td>
+                <td>
+                    <a @click="toEdit(index)">修改</a>&nbsp;&nbsp;
+                    <a @click="del(index)">删除</a>
+                </td>
+            </tr>
+        </table>
+        <div>
+            <button @click="page.pageNum=1">首页</button>
+            <button @click="page.pageNum>1?page.pageNum--:page.pageNum=1">上一页</button>
+            <button @click="page.pageNum<page.pageTotal?page.pageNum++:page.pageNum=page.pageTotal">下一页</button>
+            <button @click="page.pageNum=page.pageTotal">尾页</button>
+        </div>
+
+    </div>
+
+    <div v-if="!show">
+        姓名：<input type="text" v-model="user.name"><br>
+        性别：<input type="radio" v-model="user.sex" value="0">男
+        <input type="radio" v-model="user.sex" value="1">女<br>
+        年龄：<input type="text" v-model="user.age"><br>
+        <button @click="add(user)" v-if="!isEdit">添加</button>&nbsp;
+        <button @click="edit(user)" v-if="isEdit">修改</button>&nbsp;
+        <button @click="cancel">取消</button>&nbsp;
+    </div>
+
+</div>
+</body>
+<script>
+    var app =  new Vue({
+        el:"#app",
+        data:{
+            searchObj:{
+              name:""
+            },
+            page:{
+                pageNum:1,
+                pageSize:2,
+                pageTotal:0
+            },
+            showData:[],
+            isEdit:false,
+            show:true,
+            user:{},
+            users:[
+                {name:'郭富城', sex:'1', age: 21},
+                {name:'刘德华', sex:'0', age: 30},
+                {name:'朱茵', sex:'1', age: 24},
+                {name:'高圆圆', sex:'1', age: 18},
+                {name:'郑凯', sex:'0', age: 25}
+            ]
+        },
+        methods:{
+            toadd(){
+                this.isEdit = false;
+                this.user = {};
+                this.show=false;
+            },
+            add(user){
+                this.users.push(user);
+                this.show=true;
+            },
+            toEdit(index){
+                this.isEdit=true;
+                this.user=this.users[index];
+                this.show=false;
+            },
+            edit(user){
+                this.show=true;
+            },
+            del(index){
+
+                this.users.splice(index,1);
+
+            },
+            search(){
+                var that = this;
+                that.showData=[];
+                that.users.forEach(function (user,index){
+                    if(that.searchObj.name!=""){
+                        if(user.name.indexOf(that.searchObj.name)==0){
+                            that.showData.push(user);
+                        }
+                    }
+                })
+            },
+            cancel(){
+                this.show=true;
+            }
+        },
+        created(){
+            this.showData=this.users.slice((this.page.pageNum-1)*this.page.pageSize,
+                this.page.pageNum*this.page.pageSize);
+            this.page.pageTotal = Math.ceil(this.users.length/this.page.pageSize);
+        },
+        watch:{
+            "page.pageNum"(newVal){
+                this.showData=this.users.slice((this.page.pageNum-1)*this.page.pageSize,
+                    this.page.pageNum*this.page.pageSize);
+            }
+        }
+
+
+    })
+
+</script>
+
+</html>

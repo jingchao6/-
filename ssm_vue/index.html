@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="node_modules/vue/dist/vue.js"></script>
+    <script src="node_modules/axios/dist/axios.js"></script>
+</head>
+<body>
+        <div id="app">
+            <table border="1" cellspacing="0">
+                <tr>
+                    <td>序号</td>
+                    <td>姓名</td>
+                    <td>年龄</td>
+                    <td>生日</td>
+                    <td>部门</td>
+                </tr>
+                    <tr v-for="user in list">
+                        <td>{{user.eid}}</td>
+                        <td>{{user.ename}}</td>
+                        <td>{{user.age}}</td>
+                        <td>{{user.birthday}}</td>
+                        <td>{{user.dept.dname}}</td>
+                    </tr>
+            </table>
+
+        </div>
+</body>
+<script>
+        axios.defaults.baseURL="http://localhost:8080/ssm_vue/";
+        var app = new Vue({
+            el:"#app",
+            data:{
+                list:[]
+            },
+            created() {
+                var that = this;
+                axios.get("emp/findAll.action").then(function ({data}=res) {
+                    that.list = data;
+                })
+            }
+        });
+
+</script>
+</html>
